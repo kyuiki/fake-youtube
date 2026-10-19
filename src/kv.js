@@ -1,10 +1,11 @@
-const BASE = import.meta.env.VITE_KV_URL ?? 'https://kv.kyuiki.com'
+const BASE = import.meta.env.VITE_KV_URL
 
 // This browser's id; the kv server requires one on every request.
 const cid = localStorage.getItem('client-id') || crypto.randomUUID().replace(/-/g, '').slice(0, 16)
 localStorage.setItem('client-id', cid)
 
 const req = async (path, { headers, ...init } = {}) => {
+  if (!BASE) throw new Error('VITE_KV_URL is not set, see .env.example')
   const r = await fetch(BASE + path, { ...init, headers: { 'X-Client-Id': cid, ...headers } })
   if (!r.ok) throw new Error(`kv ${path}: ${r.status}`)
   return r
