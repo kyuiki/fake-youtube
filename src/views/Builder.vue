@@ -172,6 +172,11 @@ const btnP = 'h-9 rounded-full bg-[#3ea6ff] px-4 text-sm font-medium text-[#0f0f
         <main class="px-4 py-4">
           <template v-if="tab === 'video'">
             <Fields :o="d.video" :f="F.video" />
+            <label class="mt-3 flex items-center gap-2 text-sm">
+              <input :checked="d.video.lock !== false" type="checkbox" class="size-3.5 accent-[#3ea6ff]" @change="d.video.lock = $event.target.checked" />
+              Force fullscreen on play
+              <span class="text-xs text-[#aaa]">(locks the mouse, Esc exits)</span>
+            </label>
             <div class="mt-5 mb-2.5 flex items-center justify-between border-t border-white/10 pt-4">
               <h2 class="text-sm font-bold">Channel</h2>
               <label class="flex items-center gap-2 text-xs text-[#aaa]"><input v-model="d.video.author.verified" type="checkbox" class="size-3.5 accent-[#3ea6ff]" />Verified</label>

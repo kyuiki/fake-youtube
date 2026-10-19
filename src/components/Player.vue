@@ -4,7 +4,7 @@ import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import Icon from './Icon.vue'
 import { lock, bindLock } from '../lock'
 
-const props = defineProps({ src: String, poster: String, start: String })
+const props = defineProps({ src: String, poster: String, start: String, force: { type: Boolean, default: true } })
 const box = ref()
 const v = ref()
 const bar = ref()
@@ -28,7 +28,7 @@ const show = computed(() => !playing.value || active.value || drag.value)
 const toggle = () => {
   if (!v.value.paused) return v.value.pause()
   v.value.play()
-  lock(box.value)
+  if (props.force) lock(box.value)
 }
 const full = () => (document.fullscreenElement ? document.exitFullscreen() : box.value.requestFullscreen())
 const onFs = () => (fs.value = document.fullscreenElement === box.value)

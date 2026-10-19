@@ -18,7 +18,8 @@
     "tags": "#tag #another",
     "likes": "45K",
     "description": "Put your description here.\n\nLine breaks are kept, and the box clamps to three lines like the real thing.\nLinks, credits, timestamps, whatever you want.",
-    "commentCount": "2,345"
+    "commentCount": "2,345",
+    "lock": true
   },
   "chips": [
     "All",
