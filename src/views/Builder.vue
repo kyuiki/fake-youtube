@@ -3,9 +3,12 @@ import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
 import sample from '../sample.json'
 import { kvGet, kvSave } from '../kv'
 import Fields from '../components/Fields.vue'
+import { host } from '../components/Player.vue'
 import Icon from '../components/Icon.vue'
 
 const clone = o => JSON.parse(JSON.stringify(o))
+// pages saved before ads existed
+const norm = v => ((v.ads ??= []), v)
 const d = ref(clone(sample))
 const cur = ref(null)
 const status = ref('')
@@ -28,16 +31,19 @@ const F = {
   site: [['name', 'Site name', 0, 1], ['logo', 'Logo URL', 1, 1, 'img']],
   rec: [['title', 'Title', 0, 1], ['channel', 'Channel'], ['duration', 'Duration'], ['views', 'Views'], ['ago', 'Uploaded'], ['thumbnail', 'Thumbnail URL', 0, 1, 'img'], ['id', 'Links to page id', 1, 1]],
   comment: [['user', 'Handle'], ['ago', 'Posted'], ['likes', 'Likes'], ['replies', 'Replies', 1], ['text', 'Text', 0, 1, 'area'], ['avatar', 'Avatar URL', 1, 1, 'img']],
+  ad: [['title', 'Headline', 0, 1], ['url', 'Link URL'], ['cta', 'Button text'], ['avatar', 'Logo URL', 0, 1, 'img'], ['video', 'Video URL (.m3u8 / .mp4), empty = sidebar only', 0, 1], ['banner', 'Sidebar banner URL (5:1)', 1, 1, 'img'], ['skip', 'Skippable after (s)', 1], ['domain', 'Display URL', 1]],
 }
 // list tabs: row() -> [image, title, subtitle, fallback letter]
 const L = {
   recs: { key: 'recommendations', f: F.rec, add: 'Add video', row: r => [r.thumbnail, r.title || 'Untitled', [r.channel, r.duration].filter(Boolean).join(' · ')] },
+  ads: { key: 'ads', f: F.ad, add: 'Add ad', row: a => [a.banner || a.avatar, a.title || 'Untitled ad', [a.domain || host(a.url), a.video ? 'Video + sidebar' : 'Sidebar only'].filter(Boolean).join(' · ')] },
   comments: { key: 'comments', f: F.comment, add: 'Add comment', round: 1, row: c => [c.avatar, c.user ? `@${c.user}` : 'No handle', c.text, c.user?.[0]] },
 }
 const tabs = computed(() => [
   ['video', 'Video'],
   ['recs', 'Up next', d.value.recommendations.length],
   ['comments', 'Comments', d.value.comments.length],
+  ['ads', 'Ads', d.value.ads.length],
   ['site', 'Site'],
   ['json', 'JSON'],
 ])
@@ -107,7 +113,7 @@ const save = () =>
   })
 const edit = key =>
   run('Loading…', async () => {
-    d.value = await kvGet(key)
+    d.value = norm(await kvGet(key))
     cur.value = mine.value.find(m => m.key === key)
   })
 const fresh = () => {
@@ -117,7 +123,7 @@ const fresh = () => {
 }
 const applyRaw = () =>
   run('', async () => {
-    d.value = JSON.parse(raw.value)
+    d.value = norm(JSON.parse(raw.value))
   })
 
 const ico = 'grid size-9 shrink-0 place-items-center rounded-full text-[#aaa] hover:bg-white/10 hover:text-white active:scale-[0.96]'
