@@ -1,0 +1,188 @@
+{
+  "site": {
+    "name": "Rektumbe",
+    "logo": ""
+  },
+  "video": {
+    "src": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+    "poster": "https://picsum.photos/seed/main/1280/720",
+    "title": "Your video title goes here",
+    "author": {
+      "name": "Your Channel",
+      "avatar": "https://picsum.photos/seed/author/88/88",
+      "verified": true,
+      "subs": "1.2M subscribers"
+    },
+    "views": "1,234,567 views",
+    "date": "3 months ago",
+    "tags": "#tag #another",
+    "likes": "45K",
+    "description": "Put your description here.\n\nLine breaks are kept, and the box clamps to three lines like the real thing.\nLinks, credits, timestamps, whatever you want.",
+    "commentCount": "2,345"
+  },
+  "chips": [
+    "All",
+    "From Your Channel",
+    "Related",
+    "For you",
+    "Recently uploaded",
+    "Watched"
+  ],
+  "recommendations": [
+    {
+      "title": "I tried building a desk from a single plank of wood",
+      "channel": "Woodshop Weekly",
+      "views": "12K views",
+      "ago": "1 years ago",
+      "duration": "12:04",
+      "thumbnail": "https://picsum.photos/seed/vid0/336/188",
+      "id": ""
+    },
+    {
+      "title": "The quiet rise of tiny home gardens",
+      "channel": "Green Corner",
+      "views": "49K views",
+      "ago": "2 months ago",
+      "duration": "8:31",
+      "thumbnail": "https://picsum.photos/seed/vid1/336/188",
+      "id": ""
+    },
+    {
+      "title": "Explaining compilers in 12 minutes",
+      "channel": "Byte Size",
+      "views": "86K views",
+      "ago": "3 months ago",
+      "duration": "12:00",
+      "thumbnail": "https://picsum.photos/seed/vid2/336/188",
+      "id": ""
+    },
+    {
+      "title": "Morning routine that actually stuck (one year later)",
+      "channel": "Daily Notes",
+      "views": "123K views",
+      "ago": "4 years ago",
+      "duration": "15:47",
+      "thumbnail": "https://picsum.photos/seed/vid3/336/188",
+      "id": ""
+    },
+    {
+      "title": "Why old maps look the way they do",
+      "channel": "Map Nerd",
+      "views": "160K views",
+      "ago": "5 months ago",
+      "duration": "21:13",
+      "thumbnail": "https://picsum.photos/seed/vid4/336/188",
+      "id": ""
+    },
+    {
+      "title": "Street food tour: 10 dishes under $5",
+      "channel": "Wander Eats",
+      "views": "197K views",
+      "ago": "6 months ago",
+      "duration": "18:26",
+      "thumbnail": "https://picsum.photos/seed/vid5/336/188",
+      "id": ""
+    },
+    {
+      "title": "Restoring a rusted bike back to life",
+      "channel": "Two Wheels",
+      "views": "234K views",
+      "ago": "7 years ago",
+      "duration": "27:09",
+      "thumbnail": "https://picsum.photos/seed/vid6/336/188",
+      "id": ""
+    },
+    {
+      "title": "Lo-fi beats to focus to — 3 hour mix",
+      "channel": "Chill Tapes",
+      "views": "271K views",
+      "ago": "8 months ago",
+      "duration": "3:02:11",
+      "thumbnail": "https://picsum.photos/seed/vid7/336/188",
+      "id": ""
+    },
+    {
+      "title": "How satellites stay in orbit",
+      "channel": "Orbit Lab",
+      "views": "308K views",
+      "ago": "9 months ago",
+      "duration": "9:58",
+      "thumbnail": "https://picsum.photos/seed/vid8/336/188",
+      "id": ""
+    },
+    {
+      "title": "Cooking the perfect omelette, slowly",
+      "channel": "Kitchen Slow",
+      "views": "345K views",
+      "ago": "10 years ago",
+      "duration": "6:40",
+      "thumbnail": "https://picsum.photos/seed/vid9/336/188",
+      "id": ""
+    },
+    {
+      "title": "A week living off-grid in the mountains",
+      "channel": "Far Trails",
+      "views": "382K views",
+      "ago": "11 months ago",
+      "duration": "32:15",
+      "thumbnail": "https://picsum.photos/seed/vid10/336/188",
+      "id": ""
+    },
+    {
+      "title": "Every keyboard switch, explained",
+      "channel": "Clack Club",
+      "views": "419K views",
+      "ago": "1 months ago",
+      "duration": "14:22",
+      "thumbnail": "https://picsum.photos/seed/vid11/336/188",
+      "id": ""
+    }
+  ],
+  "comments": [
+    {
+      "user": "someone123",
+      "avatar": "https://picsum.photos/seed/c1/80/80",
+      "ago": "2 months ago",
+      "text": "Put your fake comments here.",
+      "likes": "1.2K",
+      "replies": 14
+    },
+    {
+      "user": "another.viewer",
+      "avatar": "",
+      "ago": "1 month ago",
+      "text": "Leave avatar empty to get a letter avatar.",
+      "likes": "856",
+      "replies": 3
+    },
+    {
+      "user": "night_owl",
+      "avatar": "https://picsum.photos/seed/c3/80/80",
+      "ago": "3 weeks ago",
+      "text": "Multi-line text works too.\nLike this.",
+      "likes": "402"
+    },
+    {
+      "user": "random-person",
+      "avatar": "",
+      "ago": "2 weeks ago",
+      "text": "Comment number four.",
+      "likes": "97",
+      "replies": 1
+    },
+    {
+      "user": "quietreader",
+      "avatar": "https://picsum.photos/seed/c5/80/80",
+      "ago": "1 week ago",
+      "text": "Comment number five.",
+      "likes": "45"
+    },
+    {
+      "user": "plantmom",
+      "avatar": "",
+      "ago": "4 days ago",
+      "text": "Comment number six.",
+      "likes": "8"
+    }
+  ]
+}
