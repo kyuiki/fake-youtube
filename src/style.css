@@ -1,0 +1,15 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Roboto", "Arial", sans-serif;
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  background: #0f0f0f;
+  color: #f1f1f1;
+  font-family: var(--font-sans);
+}
