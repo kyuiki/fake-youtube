@@ -4,7 +4,7 @@ import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import Icon from './Icon.vue'
 import { lock, bindLock } from '../lock'
 
-const props = defineProps({ src: String, poster: String })
+const props = defineProps({ src: String, poster: String, start: String })
 const box = ref()
 const v = ref()
 const bar = ref()
@@ -48,6 +48,7 @@ const wake = () => {
   clearTimeout(idle)
   idle = setTimeout(() => (active.value = false), 2500)
 }
+const onMeta = e => (e.target.currentTime = t.value = parseFloat(props.start) || 0)
 const onBuf = () => {
   const b = v.value.buffered
   buf.value = b.length ? b.end(b.length - 1) : 0
@@ -83,6 +84,7 @@ onBeforeUnmount(() => {
       @timeupdate="t = $event.target.currentTime"
       @durationchange="dur = $event.target.duration"
       @progress="onBuf"
+      @loadedmetadata="onMeta"
     />
     <div class="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-linear-to-t from-black/70 to-transparent transition-opacity duration-300" :class="show ? 'opacity-100' : 'opacity-0'" />
     <div class="absolute inset-x-0 bottom-0 px-3 transition-opacity duration-300" :class="show ? 'opacity-100' : 'opacity-0 pointer-events-none'">

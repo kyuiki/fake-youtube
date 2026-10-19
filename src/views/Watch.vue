@@ -58,7 +58,7 @@ onMounted(async () => {
       </template>
 
       <template v-else>
-        <Player :key="d.video.src" :src="d.video.src" :poster="d.video.poster" />
+        <Player :key="d.video.src" :src="d.video.src" :poster="d.video.poster" :start="$route.query.t" />
         <h1 class="mt-3 line-clamp-2 text-xl font-bold leading-7">{{ d.video.title }}</h1>
         <div class="mt-3 flex flex-wrap items-center justify-between gap-3">
           <div class="flex items-center">
