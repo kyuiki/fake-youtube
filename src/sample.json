@@ -21,6 +21,26 @@
     "commentCount": "2,345",
     "lock": true
   },
+  "ads": [
+    {
+      "title": "Fresh roasted coffee, delivered every week",
+      "url": "https://example.com",
+      "cta": "Learn more",
+      "avatar": "https://picsum.photos/seed/ad1/88/88",
+      "banner": "https://picsum.photos/seed/ad1b/860/172",
+      "video": "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
+      "skip": "5"
+    },
+    {
+      "title": "Desk lamps 30% off this week only",
+      "url": "https://example.com",
+      "cta": "Shop now",
+      "avatar": "https://picsum.photos/seed/ad2/88/88",
+      "banner": "https://picsum.photos/seed/ad2b/860/172",
+      "video": "https://test-streams.mux.dev/tos_ismc/main.m3u8",
+      "skip": "5"
+    }
+  ],
   "chips": [
     "All",
     "From Your Channel",

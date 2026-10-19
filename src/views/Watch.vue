@@ -1,13 +1,17 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import Masthead from '../components/Masthead.vue'
-import Player from '../components/Player.vue'
+import Player, { host } from '../components/Player.vue'
 import Icon from '../components/Icon.vue'
 import { kvGet } from '../kv'
 
 const props = defineProps({ id: String, preview: Boolean })
 const d = ref(null)
 const err = ref(false)
+const cur = ref(null)
+// companion card: the ad playing (or last played) in the player, else the first one
+const side = computed(() => cur.value ?? d.value?.ads?.[0])
+const pod = computed(() => d.value?.ads?.filter(a => a.video) ?? [])
 const colors = ['#5c6bc0', '#ef6c00', '#00897b', '#8e24aa', '#c62828', '#3949ab', '#6d4c41', '#00838f']
 const pill = 'flex h-9 items-center gap-1.5 rounded-full bg-white/10 px-4 text-sm font-medium hover:bg-white/20'
 const sk = 'rounded bg-white/10'
@@ -58,7 +62,7 @@ onMounted(async () => {
       </template>
 
       <template v-else>
-        <Player :key="d.video.src" :src="d.video.src" :poster="d.video.poster" :start="$route.query.t" :force="d.video.lock !== false" />
+        <Player :key="d.video.src" :src="d.video.src" :poster="d.video.poster" :start="$route.query.t" :force="d.video.lock !== false" :ads="pod" @ad="cur = $event" />
         <h1 class="mt-3 line-clamp-2 text-xl font-bold leading-7">{{ d.video.title }}</h1>
         <div class="mt-3 flex flex-wrap items-center justify-between gap-3">
           <div class="flex items-center">
@@ -136,6 +140,20 @@ onMounted(async () => {
       </template>
 
       <template v-else>
+        <a v-if="side" :href="side.url || undefined" target="_blank" class="mb-2 block overflow-hidden rounded-xl border border-white/20">
+          <img v-if="side.banner" :src="side.banner" alt="" class="aspect-[5/1] w-full object-cover" />
+          <div class="my-4 flex items-start">
+            <img v-if="side.avatar" :src="side.avatar" alt="" class="ml-4 size-9 shrink-0 rounded-full object-cover" />
+            <div class="ml-3 min-w-0 flex-1" :class="{ 'ml-4': !side.avatar }">
+              <div class="line-clamp-2 text-base leading-[22px]">{{ side.title }}</div>
+              <div class="flex text-xs leading-[18px]">
+                <span class="shrink-0 font-bold">Sponsored<span class="px-1 font-normal text-[#aaa]">·</span></span><span class="truncate text-[#aaa]">{{ side.domain || host(side.url) }}</span>
+              </div>
+            </div>
+            <span class="ml-4 h-10 shrink-0 rounded-full bg-white/10 px-4 text-sm leading-10 font-medium hover:bg-white/20">{{ side.cta || 'Learn more' }}</span>
+            <span class="mx-2 grid size-10 shrink-0 place-items-center rounded-full hover:bg-white/10"><Icon n="vert" /></span>
+          </div>
+        </a>
         <div class="mb-3 flex gap-3 overflow-hidden">
           <span v-for="(c, i) in d.chips" :key="c" class="flex h-8 shrink-0 items-center rounded-lg px-3 text-sm font-medium" :class="i ? 'bg-white/10' : 'bg-[#f1f1f1] text-[#0f0f0f]'">{{ c }}</span>
         </div>
