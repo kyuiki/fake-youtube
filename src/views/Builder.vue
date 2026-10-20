@@ -78,7 +78,7 @@ const copy = async () => {
   setTimeout(() => (copied.value = false), 1500)
 }
 
-document.title = 'Watch page builder'
+document.title = 'Rektoomtube'
 // /preview (iframe or another tab) re-renders from this on every change
 watch(d, v => localStorage.setItem('draft', JSON.stringify(v)), { deep: true, immediate: true })
 // field being edited (or open list item); preview outlines the matching element
@@ -144,7 +144,7 @@ const btnP = 'h-9 rounded-full bg-[#3ea6ff] px-4 text-sm font-medium text-[#0f0f
       <div class="mx-auto max-w-xl">
         <header class="sticky top-0 z-10 bg-[#0f0f0f] px-4 pt-3">
           <div class="flex items-center gap-1.5">
-            <h1 class="mr-auto shrink-0 text-base font-bold">Builder</h1>
+            <h1 class="mr-auto shrink-0 text-base font-bold">Rektoomtube</h1>
             <span class="min-w-0 truncate text-xs" :class="bad ? 'text-[#ff8a80]' : 'text-[#aaa]'">{{ status }}</span>
             <select
               v-if="mine.length"
