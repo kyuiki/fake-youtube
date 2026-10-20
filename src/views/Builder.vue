@@ -139,116 +139,122 @@ const btnP = 'h-9 rounded-full bg-[#3ea6ff] px-4 text-sm font-medium text-[#0f0f
 </script>
 
 <template>
-  <div class="lg:grid lg:h-dvh lg:grid-cols-[minmax(400px,520px)_1fr]">
-    <div class="lg:overflow-y-auto">
-      <div class="mx-auto max-w-xl">
-        <header class="sticky top-0 z-10 bg-[#0f0f0f] px-4 pt-3">
-          <div class="flex items-center gap-1.5">
-            <h1 class="mr-auto shrink-0 text-base font-bold">Rektoomtube</h1>
-            <span class="min-w-0 truncate text-xs" :class="bad ? 'text-[#ff8a80]' : 'text-[#aaa]'">{{ status }}</span>
-            <select
-              v-if="mine.length"
-              :value="cur?.key ?? ''"
-              aria-label="Saved pages"
-              class="h-9 max-w-40 min-w-0 truncate rounded-full bg-white/10 pr-2 pl-3 text-sm outline-none hover:bg-white/20"
-              @change="edit($event.target.value)"
-            >
-              <option value="" disabled>Saved pages</option>
-              <option v-for="m in mine" :key="m.key" :value="m.key">{{ m.title || m.key }}</option>
-            </select>
-            <button :class="ico" title="New page" aria-label="New page" @click="fresh"><Icon n="add" :s="20" /></button>
-            <a :class="ico" href="/preview" target="_blank" title="Open preview" aria-label="Open preview"><Icon n="open" :s="18" /></a>
-            <button :class="btnP" @click="save">{{ cur ? 'Save' : 'Create' }}</button>
-          </div>
-
-          <div v-if="link" class="mt-2 flex h-8 items-center gap-1 rounded-md bg-white/5 pl-2.5 text-xs">
-            <a :href="link" target="_blank" class="min-w-0 flex-1 truncate text-[#3ea6ff]">{{ link }}</a>
-            <span v-if="copied" class="text-[#aaa]">Copied</span>
-            <button :class="ico" class="size-8" title="Copy link" aria-label="Copy link" @click="copy"><Icon n="copy" :s="16" /></button>
-          </div>
-
-          <nav class="mt-2 flex overflow-x-auto scrollbar-none border-b border-white/10" role="tablist">
-            <button
-              v-for="[k, l, n] in tabs"
-              :key="k"
-              role="tab"
-              :aria-selected="tab === k"
-              class="-mb-px h-10 shrink-0 border-b-2 px-3 text-sm font-medium"
-              :class="tab === k ? 'border-[#f1f1f1] text-[#f1f1f1]' : 'border-transparent text-[#aaa] hover:text-[#f1f1f1]'"
-              @click="tab = k"
-            >
-              {{ l }}<span v-if="n != null" class="ml-1.5 text-xs text-[#aaa]">{{ n }}</span>
-            </button>
-          </nav>
-        </header>
-
-        <main class="px-4 py-4" @focusin="focus = $event.target.closest('[data-hl]')?.dataset.hl ?? ''" @focusout="$event.currentTarget.contains($event.relatedTarget) || (focus = '')">
-          <template v-if="tab === 'video'">
-            <Fields :o="d.video" :f="F.video" p="video" />
-            <label data-hl="video.lock" class="mt-3 flex items-center gap-2 text-sm">
-              <input :checked="d.video.lock !== false" type="checkbox" class="size-3.5 accent-[#3ea6ff]" @change="d.video.lock = $event.target.checked" />
-              Force fullscreen on play
-              <span class="text-xs text-[#aaa]">(locks the mouse, Esc exits)</span>
-            </label>
-            <div class="mt-5 mb-2.5 flex items-center justify-between border-t border-white/10 pt-4">
-              <h2 class="text-sm font-bold">Channel</h2>
-              <label data-hl="video.author.verified" class="flex items-center gap-2 text-xs text-[#aaa]"><input v-model="d.video.author.verified" type="checkbox" class="size-3.5 accent-[#3ea6ff]" />Verified</label>
+  <div class="lg:flex lg:h-dvh lg:flex-col">
+    <div class="lg:grid lg:min-h-0 lg:flex-1 lg:grid-cols-[minmax(400px,520px)_1fr]">
+      <div class="lg:overflow-y-auto">
+        <div class="mx-auto max-w-xl">
+          <header class="sticky top-0 z-10 bg-[#0f0f0f] px-4 pt-3">
+            <div class="flex items-center gap-1.5">
+              <h1 class="mr-auto shrink-0 text-base font-bold">Rektoomtube</h1>
+              <span class="min-w-0 truncate text-xs" :class="bad ? 'text-[#ff8a80]' : 'text-[#aaa]'">{{ status }}</span>
+              <select
+                v-if="mine.length"
+                :value="cur?.key ?? ''"
+                aria-label="Saved pages"
+                class="h-9 max-w-40 min-w-0 truncate rounded-full bg-white/10 pr-2 pl-3 text-sm outline-none hover:bg-white/20"
+                @change="edit($event.target.value)"
+              >
+                <option value="" disabled>Saved pages</option>
+                <option v-for="m in mine" :key="m.key" :value="m.key">{{ m.title || m.key }}</option>
+              </select>
+              <button :class="ico" title="New page" aria-label="New page" @click="fresh"><Icon n="add" :s="20" /></button>
+              <a :class="ico" href="/preview" target="_blank" title="Open preview" aria-label="Open preview"><Icon n="open" :s="18" /></a>
+              <button :class="btnP" @click="save">{{ cur ? 'Save' : 'Create' }}</button>
             </div>
-            <Fields :o="d.video.author" :f="F.author" p="video.author" />
-          </template>
 
-          <template v-else-if="tab === 'site'">
-            <Fields :o="d.site" :f="F.site" p="site" />
-            <label data-hl="chips" class="mt-2.5 block">
-              <span class="mb-1 block text-xs text-[#aaa]">Chips</span>
-              <span class="flex flex-wrap gap-1.5 rounded-md border border-[#303030] bg-[#121212] p-1 focus-within:border-[#3ea6ff]">
-                <span v-for="(c, i) in d.chips" :key="c" class="flex h-7 items-center gap-0.5 rounded bg-white/10 pr-1 pl-2.5 text-sm">
-                  {{ c }}
-                  <button type="button" class="rounded text-[#aaa] hover:text-white" :aria-label="`Remove ${c}`" @click.prevent="d.chips.splice(i, 1)"><Icon n="close" :s="14" /></button>
-                </span>
-                <input v-model="chip" class="h-7 min-w-24 flex-1 bg-transparent px-1.5 text-sm outline-none placeholder:text-[#888]" placeholder="Type, then Enter" @keydown="chipKey" @blur="addChip" />
-              </span>
-            </label>
-          </template>
+            <div v-if="link" class="mt-2 flex h-8 items-center gap-1 rounded-md bg-white/5 pl-2.5 text-xs">
+              <a :href="link" target="_blank" class="min-w-0 flex-1 truncate text-[#3ea6ff]">{{ link }}</a>
+              <span v-if="copied" class="text-[#aaa]">Copied</span>
+              <button :class="ico" class="size-8" title="Copy link" aria-label="Copy link" @click="copy"><Icon n="copy" :s="16" /></button>
+            </div>
 
-          <template v-else-if="tab === 'json'">
-            <textarea v-model="raw" rows="24" spellcheck="false" class="block w-full resize-y rounded-md border border-[#303030] bg-[#121212] p-2.5 font-mono text-xs outline-none focus:border-[#3ea6ff]" />
-            <button :class="btn" class="mt-2" @click="applyRaw">Apply</button>
-          </template>
+            <nav class="mt-2 flex overflow-x-auto scrollbar-none border-b border-white/10" role="tablist">
+              <button
+                v-for="[k, l, n] in tabs"
+                :key="k"
+                role="tab"
+                :aria-selected="tab === k"
+                class="-mb-px h-10 shrink-0 border-b-2 px-3 text-sm font-medium"
+                :class="tab === k ? 'border-[#f1f1f1] text-[#f1f1f1]' : 'border-transparent text-[#aaa] hover:text-[#f1f1f1]'"
+                @click="tab = k"
+              >
+                {{ l }}<span v-if="n != null" class="ml-1.5 text-xs text-[#aaa]">{{ n }}</span>
+              </button>
+            </nav>
+          </header>
 
-          <div v-else class="space-y-1">
-            <p v-if="!rows.length" class="py-6 text-center text-sm text-[#aaa]">Nothing here yet.</p>
-            <div v-for="([o, img, title, sub, ch], i) in rows" :key="o" class="group rounded-lg" :class="ex === o ? 'bg-white/5' : 'hover:bg-white/5'">
-              <div class="flex items-center pr-1">
-                <button class="flex min-w-0 flex-1 items-center gap-3 p-2 text-left" :aria-expanded="ex === o" @click="ex = ex === o ? null : o">
-                  <img v-if="img" :src="img" alt="" class="shrink-0 bg-white/10 object-cover" :class="L[tab].round ? 'size-8 rounded-full' : 'h-9 w-16 rounded'" />
-                  <span v-else class="grid shrink-0 place-items-center bg-white/10 text-sm font-medium uppercase" :class="L[tab].round ? 'size-8 rounded-full' : 'h-9 w-16 rounded'">{{ ch }}</span>
-                  <span class="min-w-0 flex-1">
-                    <span class="block truncate text-sm">{{ title }}</span>
-                    <span class="block truncate text-xs text-[#aaa]">{{ sub }}</span>
-                  </span>
-                  <Icon n="down" :s="20" class="shrink-0 text-[#aaa] transition-transform" :class="{ 'rotate-180': ex === o }" />
-                </button>
-                <span class="flex opacity-0 group-hover:opacity-100 focus-within:opacity-100" :class="{ 'opacity-100': ex === o }">
-                  <button :class="ico" class="size-8" title="Duplicate" aria-label="Duplicate" @click="dup(i)"><Icon n="copy" :s="16" /></button>
-                  <button :class="ico" class="size-8 hover:text-[#ff8a80]" title="Remove" aria-label="Remove" @click="list.splice(i, 1)"><Icon n="delete" :s="18" /></button>
-                </span>
+          <main class="px-4 py-4" @focusin="focus = $event.target.closest('[data-hl]')?.dataset.hl ?? ''" @focusout="$event.currentTarget.contains($event.relatedTarget) || (focus = '')">
+            <template v-if="tab === 'video'">
+              <Fields :o="d.video" :f="F.video" p="video" />
+              <label data-hl="video.lock" class="mt-3 flex items-center gap-2 text-sm">
+                <input :checked="d.video.lock !== false" type="checkbox" class="size-3.5 accent-[#3ea6ff]" @change="d.video.lock = $event.target.checked" />
+                Force fullscreen on play
+                <span class="text-xs text-[#aaa]">(locks the mouse, Esc exits)</span>
+              </label>
+              <div class="mt-5 mb-2.5 flex items-center justify-between border-t border-white/10 pt-4">
+                <h2 class="text-sm font-bold">Channel</h2>
+                <label data-hl="video.author.verified" class="flex items-center gap-2 text-xs text-[#aaa]"><input v-model="d.video.author.verified" type="checkbox" class="size-3.5 accent-[#3ea6ff]" />Verified</label>
               </div>
-              <Fields v-if="ex === o" :o="o" :f="L[tab].f" :p="`${L[tab].key}.${i}`" class="px-2 pt-1 pb-3" />
+              <Fields :o="d.video.author" :f="F.author" p="video.author" />
+            </template>
+
+            <template v-else-if="tab === 'site'">
+              <Fields :o="d.site" :f="F.site" p="site" />
+              <label data-hl="chips" class="mt-2.5 block">
+                <span class="mb-1 block text-xs text-[#aaa]">Chips</span>
+                <span class="flex flex-wrap gap-1.5 rounded-md border border-[#303030] bg-[#121212] p-1 focus-within:border-[#3ea6ff]">
+                  <span v-for="(c, i) in d.chips" :key="c" class="flex h-7 items-center gap-0.5 rounded bg-white/10 pr-1 pl-2.5 text-sm">
+                    {{ c }}
+                    <button type="button" class="rounded text-[#aaa] hover:text-white" :aria-label="`Remove ${c}`" @click.prevent="d.chips.splice(i, 1)"><Icon n="close" :s="14" /></button>
+                  </span>
+                  <input v-model="chip" class="h-7 min-w-24 flex-1 bg-transparent px-1.5 text-sm outline-none placeholder:text-[#888]" placeholder="Type, then Enter" @keydown="chipKey" @blur="addChip" />
+                </span>
+              </label>
+            </template>
+
+            <template v-else-if="tab === 'json'">
+              <textarea v-model="raw" rows="24" spellcheck="false" class="block w-full resize-y rounded-md border border-[#303030] bg-[#121212] p-2.5 font-mono text-xs outline-none focus:border-[#3ea6ff]" />
+              <button :class="btn" class="mt-2" @click="applyRaw">Apply</button>
+            </template>
+
+            <div v-else class="space-y-1">
+              <p v-if="!rows.length" class="py-6 text-center text-sm text-[#aaa]">Nothing here yet.</p>
+              <div v-for="([o, img, title, sub, ch], i) in rows" :key="o" class="group rounded-lg" :class="ex === o ? 'bg-white/5' : 'hover:bg-white/5'">
+                <div class="flex items-center pr-1">
+                  <button class="flex min-w-0 flex-1 items-center gap-3 p-2 text-left" :aria-expanded="ex === o" @click="ex = ex === o ? null : o">
+                    <img v-if="img" :src="img" alt="" class="shrink-0 bg-white/10 object-cover" :class="L[tab].round ? 'size-8 rounded-full' : 'h-9 w-16 rounded'" />
+                    <span v-else class="grid shrink-0 place-items-center bg-white/10 text-sm font-medium uppercase" :class="L[tab].round ? 'size-8 rounded-full' : 'h-9 w-16 rounded'">{{ ch }}</span>
+                    <span class="min-w-0 flex-1">
+                      <span class="block truncate text-sm">{{ title }}</span>
+                      <span class="block truncate text-xs text-[#aaa]">{{ sub }}</span>
+                    </span>
+                    <Icon n="down" :s="20" class="shrink-0 text-[#aaa] transition-transform" :class="{ 'rotate-180': ex === o }" />
+                  </button>
+                  <span class="flex opacity-0 group-hover:opacity-100 focus-within:opacity-100" :class="{ 'opacity-100': ex === o }">
+                    <button :class="ico" class="size-8" title="Duplicate" aria-label="Duplicate" @click="dup(i)"><Icon n="copy" :s="16" /></button>
+                    <button :class="ico" class="size-8 hover:text-[#ff8a80]" title="Remove" aria-label="Remove" @click="list.splice(i, 1)"><Icon n="delete" :s="18" /></button>
+                  </span>
+                </div>
+                <Fields v-if="ex === o" :o="o" :f="L[tab].f" :p="`${L[tab].key}.${i}`" class="px-2 pt-1 pb-3" />
+              </div>
+              <button
+                class="mt-2 flex h-10 w-full items-center justify-center gap-1.5 rounded-lg border border-dashed border-white/15 text-sm text-[#aaa] hover:border-white/30 hover:text-white active:scale-[0.99]"
+                @click="addItem"
+              >
+                <Icon n="add" :s="18" />{{ L[tab].add }}
+              </button>
             </div>
-            <button
-              class="mt-2 flex h-10 w-full items-center justify-center gap-1.5 rounded-lg border border-dashed border-white/15 text-sm text-[#aaa] hover:border-white/30 hover:text-white active:scale-[0.99]"
-              @click="addItem"
-            >
-              <Icon n="add" :s="18" />{{ L[tab].add }}
-            </button>
-          </div>
-        </main>
+          </main>
+        </div>
+      </div>
+
+      <div ref="pane" class="overflow-hidden border-l border-white/10 max-lg:hidden">
+        <iframe src="/preview" title="Preview" allow="fullscreen" class="origin-top-left border-0" :style="{ width: `${w / scale}px`, height: `${100 / scale}vh`, transform: `scale(${scale})` }" />
       </div>
     </div>
-
-    <div ref="pane" class="overflow-hidden border-l border-white/10 max-lg:hidden">
-      <iframe src="/preview" title="Preview" allow="fullscreen" class="origin-top-left border-0" :style="{ width: `${w / scale}px`, height: `${100 / scale}vh`, transform: `scale(${scale})` }" />
-    </div>
+    <footer role="note" class="sticky bottom-0 flex items-center justify-center gap-2 bg-[#ffd54f] px-4 py-1.5 text-center text-xs font-medium text-black">
+      <Icon n="info" :s="16" class="shrink-0" />
+      Rektoomtube is a prank page builder. It is NOT YouTube and not affiliated with Google. Do not use it for phishing.
+    </footer>
   </div>
 </template>
