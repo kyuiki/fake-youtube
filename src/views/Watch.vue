@@ -19,6 +19,19 @@ const colors = ['#5c6bc0', '#ef6c00', '#00897b', '#8e24aa', '#c62828', '#3949ab'
 const pill = 'flex h-9 items-center gap-1.5 rounded-full bg-white/10 px-4 text-sm font-medium hover:bg-white/20'
 const sk = 'rounded bg-white/10'
 
+// our ads aren't youtube's, so only generic filters can catch them: cosmetic ones hide the bait, network/DNS ones block the script
+const adblock = async () => {
+  const b = Object.assign(document.createElement('div'), { className: 'adsbox ad-banner textads banner-ads pub_300x250' })
+  b.style.cssText = 'position:absolute;left:-9999px;height:1px'
+  document.body.append(b)
+  const net = fetch('https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js', { method: 'HEAD', mode: 'no-cors' }).then(() => false, () => true)
+  await new Promise(r => setTimeout(r, 500))
+  const hidden = !b.offsetHeight
+  b.remove()
+  // a slow network shouldn't stall the page; count it as not blocked
+  return hidden || Promise.race([net, new Promise(r => setTimeout(r, 1000, false))])
+}
+
 onMounted(async () => {
   // builder iframe: render the draft it keeps in localStorage, live
   if (props.preview) {
@@ -35,8 +48,10 @@ onMounted(async () => {
   try {
     if (!props.id) throw 0
     // ponytail: min 800ms so the skeleton is visible even when the JSON loads instantly
-    const [res] = await Promise.all([kvGet(props.id), new Promise(r => setTimeout(r, 800))])
+    const [res, blocked] = await Promise.all([kvGet(props.id), adblock(), new Promise(r => setTimeout(r, 800))])
     if (!res?.video?.author) throw 0
+    // a blocker user expects no ads; showing ours would give the page away
+    if (blocked) res.ads = []
     document.title = res.video.title
     d.value = res
   } catch {
