@@ -26,7 +26,7 @@ const mine = ref(saved)
 
 // [key, label, optional, wide, type]
 const F = {
-  video: [['src', 'Video URL (.m3u8)', 0, 1], ['title', 'Title', 0, 1], ['views', 'Views'], ['date', 'Date'], ['likes', 'Likes'], ['commentCount', 'Comment count'], ['description', 'Description', 0, 1, 'area'], ['poster', 'Poster URL', 1, 1, 'img'], ['tags', 'Tags', 1, 1]],
+  video: [['src', 'Video URL (.m3u8 / .mp4 / .webm)', 0, 1], ['title', 'Title', 0, 1], ['views', 'Views'], ['date', 'Date'], ['likes', 'Likes'], ['commentCount', 'Comment count'], ['description', 'Description', 0, 1, 'area'], ['poster', 'Poster URL', 1, 1, 'img'], ['tags', 'Tags', 1, 1]],
   author: [['name', 'Name'], ['subs', 'Subscribers'], ['avatar', 'Avatar URL', 1, 1, 'img']],
   site: [['name', 'Site name', 0, 1], ['logo', 'Logo URL', 1, 1, 'img']],
   rec: [['title', 'Title', 0, 1], ['channel', 'Channel'], ['duration', 'Duration'], ['views', 'Views'], ['ago', 'Uploaded'], ['thumbnail', 'Thumbnail URL', 0, 1, 'img'], ['id', 'Links to page id', 1, 1]],
