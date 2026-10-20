@@ -72,6 +72,8 @@
     ahls?.destroy();
     ahls = null;
     if (i >= props.ads.length) {
+      // .mp4 ads aren't detached by hls.destroy(), so they'd keep playing hidden
+      av.value.pause();
       ai.value = -1;
       t.value = v.value.currentTime;
       dur.value = v.value.duration;
@@ -160,8 +162,8 @@
       playsinline
       @click="clickAd"
       @play="playing = true"
-      @pause="playing = false"
-      @timeupdate="t = $event.target.currentTime"
+      @pause="ad && (playing = false)"
+      @timeupdate="ad && (t = $event.target.currentTime)"
       @durationchange="dur = $event.target.duration"
       @ended="playAd(ai + 1)"
     />
