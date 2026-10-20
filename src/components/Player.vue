@@ -86,11 +86,6 @@
     emit("ad", props.ads[i]);
   };
   const skipAt = computed(() => (ad.value?.skip === "" || ad.value?.skip == null ? 5 : +ad.value.skip));
-  const clickAd = () => {
-    if (!ad.value.url) return toggle();
-    open(ad.value.url, "_blank");
-    av.value.pause();
-  };
   const full = () => (document.fullscreenElement ? document.exitFullscreen() : box.value.requestFullscreen());
   const onFs = () => (fs.value = document.fullscreenElement === box.value);
   const seek = (e) => {
@@ -160,7 +155,7 @@
       ref="av"
       class="absolute inset-0 h-full w-full bg-black"
       playsinline
-      @click="clickAd"
+      @click="toggle"
       @play="playing = true"
       @pause="ad && (playing = false)"
       @timeupdate="ad && (t = $event.target.currentTime)"
@@ -178,9 +173,7 @@
       >
         <a
           v-if="ad.title"
-          :href="ad.url || undefined"
-          target="_blank"
-          class="flex w-[346px] items-center rounded-lg bg-black/60 p-3"
+          class="flex cursor-pointer w-[346px] items-center rounded-lg bg-black/60 p-3"
         >
           <img v-if="ad.avatar" :src="ad.avatar" alt="" class="size-9 shrink-0 rounded-full object-cover" />
           <span class="min-w-0 flex-1 pr-5 pl-2">
@@ -195,7 +188,7 @@
           <span class="font-semibold">Sponsored</span>
           <Icon n="info" :s="12" class="mr-px ml-[5px]" />
           <span v-if="ads.length > 1" class="font-medium">&nbsp;• {{ ai + 1 }} of {{ ads.length }}</span>
-          <a :href="ad.url || undefined" target="_blank" class="ml-4 leading-[14px] font-medium">{{
+          <a class="ml-4 cursor-pointer leading-[14px] font-medium">{{
             ad.domain || host(ad.url)
           }}</a>
         </div>

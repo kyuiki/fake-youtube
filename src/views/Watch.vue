@@ -161,7 +161,7 @@ watch(
       </template>
 
       <template v-else>
-        <a v-if="side" :data-hl="`ads.${d.ads.indexOf(side)}`" :href="side.url || undefined" target="_blank" class="mb-2 block overflow-hidden rounded-xl border border-white/20">
+        <a v-if="side" :data-hl="`ads.${d.ads.indexOf(side)}`" class="mb-2 block cursor-pointer overflow-hidden rounded-xl border border-white/20">
           <img v-if="side.banner" :src="side.banner" alt="" class="aspect-[5/1] w-full object-cover" />
           <div class="my-4 flex items-start">
             <img v-if="side.avatar" :src="side.avatar" alt="" class="ml-4 size-9 shrink-0 rounded-full object-cover" />
