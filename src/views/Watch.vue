@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import Masthead from '../components/Masthead.vue'
 import Player, { host } from '../components/Player.vue'
 import Icon from '../components/Icon.vue'
@@ -9,8 +9,11 @@ const props = defineProps({ id: String, preview: Boolean })
 const d = ref(null)
 const err = ref(false)
 const cur = ref(null)
-// companion card: the ad playing (or last played) in the player, else the first one
-const side = computed(() => cur.value ?? d.value?.ads?.[0])
+// builder preview: what's being edited, and the closest data-hl element found for it
+const hl = ref('')
+const sel = ref('')
+// companion card: the ad being edited, else the one playing (or last played) in the player, else the first one
+const side = computed(() => d.value?.ads?.[/^ads\.(\d+)/.exec(hl.value)?.[1]] ?? cur.value ?? d.value?.ads?.[0])
 const pod = computed(() => d.value?.ads?.filter(a => a.video) ?? [])
 const colors = ['#5c6bc0', '#ef6c00', '#00897b', '#8e24aa', '#c62828', '#3949ab', '#6d4c41', '#00838f']
 const pill = 'flex h-9 items-center gap-1.5 rounded-full bg-white/10 px-4 text-sm font-medium hover:bg-white/20'
@@ -23,9 +26,10 @@ onMounted(async () => {
       try {
         d.value = JSON.parse(localStorage.getItem('draft'))
       } catch {}
+      hl.value = localStorage.getItem('hl') || ''
     }
     load()
-    addEventListener('storage', e => e.key === 'draft' && load())
+    addEventListener('storage', e => (e.key === 'draft' || e.key === 'hl') && load())
     return
   }
   try {
@@ -39,9 +43,26 @@ onMounted(async () => {
     err.value = true
   }
 })
+
+// d too: the edited element may only exist after the draft re-renders
+watch(
+  [hl, d],
+  () => {
+    const p = hl.value.split('.')
+    let el
+    while (p.length && !(el = document.querySelector(`[data-hl~="${p.join('.')}"]`))) p.pop()
+    sel.value = p.join('.')
+    if (!el) return
+    // not scrollIntoView: inside the builder iframe it would scroll the parent page too
+    const r = el.getBoundingClientRect()
+    if (r.top < 56 || r.bottom > innerHeight) scrollTo({ top: scrollY + r.top - (innerHeight - r.height) / 2, behavior: 'smooth' })
+  },
+  { flush: 'post' },
+)
 </script>
 
 <template>
+  <component :is="'style'" v-if="sel">[data-hl~="{{ sel }}"] { outline: 2px solid #3ea6ff; outline-offset: 2px; position: relative; z-index: 60; box-shadow: var(--glow); animation: hl 0.7s ease-out 0.3s 2 }</component>
   <Masthead :site="d?.site ?? {}" />
   <div v-if="err" class="grid h-screen place-items-center text-lg">Video unavailable</div>
   <div v-else class="flex justify-center gap-6 px-6 pt-20 max-[1016px]:flex-col">
@@ -62,23 +83,23 @@ onMounted(async () => {
       </template>
 
       <template v-else>
-        <Player :key="d.video.src" :src="d.video.src" :poster="d.video.poster" :start="$route.query.t" :force="d.video.lock !== false" :ads="pod" @ad="cur = $event" />
-        <h1 class="mt-3 line-clamp-2 text-xl font-bold leading-7">{{ d.video.title }}</h1>
+        <Player data-hl="video.src video.poster video.lock" :key="d.video.src" :src="d.video.src" :poster="d.video.poster" :start="$route.query.t" :force="d.video.lock !== false" :ads="pod" @ad="cur = $event" />
+        <h1 data-hl="video.title" class="mt-3 line-clamp-2 text-xl font-bold leading-7">{{ d.video.title }}</h1>
         <div class="mt-3 flex flex-wrap items-center justify-between gap-3">
           <div class="flex items-center">
-            <img v-if="d.video.author.avatar" :src="d.video.author.avatar" class="size-10 rounded-full object-cover" alt="" />
+            <img v-if="d.video.author.avatar" data-hl="video.author.avatar" :src="d.video.author.avatar" class="size-10 rounded-full object-cover" alt="" />
             <div v-else class="grid size-10 place-items-center rounded-full text-lg font-medium" :style="{ background: colors[0] }">{{ d.video.author.name[0] }}</div>
             <div class="ml-3 mr-6">
-              <div class="flex items-center gap-1 text-base font-medium leading-[22px]">
+              <div data-hl="video.author.name video.author.verified" class="flex items-center gap-1 text-base font-medium leading-[22px]">
                 {{ d.video.author.name }}<Icon v-if="d.video.author.verified" n="check" :s="14" class="text-[#aaa]" />
               </div>
-              <div class="text-xs leading-[18px] text-[#aaa]">{{ d.video.author.subs }}</div>
+              <div data-hl="video.author.subs" class="text-xs leading-[18px] text-[#aaa]">{{ d.video.author.subs }}</div>
             </div>
             <button class="h-9 rounded-full bg-[#f1f1f1] px-4 text-sm font-medium text-[#0f0f0f] hover:bg-[#d9d9d9]">Subscribe</button>
           </div>
           <div class="flex items-center gap-2">
             <div class="flex h-9 items-center rounded-full bg-white/10 text-sm font-medium">
-              <button class="flex h-full items-center gap-1.5 rounded-l-full pl-3 pr-4 hover:bg-white/10"><Icon n="like" />{{ d.video.likes }}</button>
+              <button data-hl="video.likes" class="flex h-full items-center gap-1.5 rounded-l-full pl-3 pr-4 hover:bg-white/10"><Icon n="like" />{{ d.video.likes }}</button>
               <span class="h-6 w-px bg-white/20" />
               <button class="flex h-full items-center rounded-r-full px-4 hover:bg-white/10"><Icon n="dislike" /></button>
             </div>
@@ -89,21 +110,21 @@ onMounted(async () => {
         </div>
 
         <div class="mt-3 rounded-xl bg-white/10 p-3 text-sm leading-5 hover:bg-white/20">
-          <div class="font-medium">{{ d.video.views }}&nbsp;&nbsp;{{ d.video.date }}&nbsp;&nbsp;<span class="text-[#aaa]">{{ d.video.tags }}</span></div>
-          <p class="line-clamp-3 whitespace-pre-line">{{ d.video.description }}</p>
+          <div class="font-medium"><span data-hl="video.views">{{ d.video.views }}</span>&nbsp;&nbsp;<span data-hl="video.date">{{ d.video.date }}</span>&nbsp;&nbsp;<span data-hl="video.tags" class="text-[#aaa]">{{ d.video.tags }}</span></div>
+          <p data-hl="video.description" class="line-clamp-3 whitespace-pre-line">{{ d.video.description }}</p>
           <span class="font-medium">...more</span>
         </div>
 
         <section class="mt-6">
           <div class="mb-6 flex items-center gap-8">
-            <h2 class="text-xl font-bold">{{ d.video.commentCount }} Comments</h2>
+            <h2 data-hl="video.commentCount" class="text-xl font-bold">{{ d.video.commentCount }} Comments</h2>
             <span class="flex items-center gap-2 text-sm font-medium"><Icon n="sort" />Sort by</span>
           </div>
           <div class="mb-8 flex gap-4">
             <Icon n="account" :s="40" class="shrink-0 text-[#aaa]" />
             <div class="flex-1 border-b border-white/20 pt-2 pb-1 text-sm text-[#aaa]">Add a comment...</div>
           </div>
-          <div v-for="(c, i) in d.comments" :key="i" class="mb-4 flex gap-4">
+          <div v-for="(c, i) in d.comments" :key="i" :data-hl="`comments.${i}`" class="mb-4 flex gap-4">
             <img v-if="c.avatar" :src="c.avatar" class="size-10 shrink-0 rounded-full object-cover" alt="" />
             <div v-else class="grid size-10 shrink-0 place-items-center rounded-full text-lg font-medium uppercase" :style="{ background: colors[(i + 1) % colors.length] }">{{ c.user[0] }}</div>
             <div class="min-w-0 flex-1">
@@ -140,7 +161,7 @@ onMounted(async () => {
       </template>
 
       <template v-else>
-        <a v-if="side" :href="side.url || undefined" target="_blank" class="mb-2 block overflow-hidden rounded-xl border border-white/20">
+        <a v-if="side" :data-hl="`ads.${d.ads.indexOf(side)}`" :href="side.url || undefined" target="_blank" class="mb-2 block overflow-hidden rounded-xl border border-white/20">
           <img v-if="side.banner" :src="side.banner" alt="" class="aspect-[5/1] w-full object-cover" />
           <div class="my-4 flex items-start">
             <img v-if="side.avatar" :src="side.avatar" alt="" class="ml-4 size-9 shrink-0 rounded-full object-cover" />
@@ -154,10 +175,10 @@ onMounted(async () => {
             <span class="mx-2 grid size-10 shrink-0 place-items-center rounded-full hover:bg-white/10"><Icon n="vert" /></span>
           </div>
         </a>
-        <div class="mb-3 flex gap-3 overflow-hidden">
+        <div data-hl="chips" class="mb-3 flex gap-3 overflow-hidden">
           <span v-for="(c, i) in d.chips" :key="c" class="flex h-8 shrink-0 items-center rounded-lg px-3 text-sm font-medium" :class="i ? 'bg-white/10' : 'bg-[#f1f1f1] text-[#0f0f0f]'">{{ c }}</span>
         </div>
-        <RouterLink v-for="(r, i) in d.recommendations" :key="i" :to="r.id ? `/watch?v=${r.id}` : $route.fullPath" class="mb-2 flex gap-2">
+        <RouterLink v-for="(r, i) in d.recommendations" :key="i" :data-hl="`recommendations.${i}`" :to="r.id ? `/watch?v=${r.id}` : $route.fullPath" class="mb-2 flex gap-2">
           <div class="relative h-[94px] w-[168px] shrink-0 overflow-hidden rounded-lg bg-white/10">
             <img :src="r.thumbnail" class="h-full w-full object-cover" alt="" loading="lazy" />
             <span class="absolute right-1 bottom-1 rounded bg-black/80 px-1 text-xs font-medium leading-[18px]">{{ r.duration }}</span>

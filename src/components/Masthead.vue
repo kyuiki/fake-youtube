@@ -9,7 +9,7 @@
   <header class="fixed inset-x-0 top-0 z-50 flex h-14 items-center justify-between bg-[#0f0f0f] px-4">
     <div class="flex shrink-0 items-center">
       <button :class="btn"><Icon n="menu" /></button>
-      <a href="#" class="ml-3 flex items-center gap-1">
+      <a href="#" data-hl="site.name site.logo" class="ml-3 flex items-center gap-1">
         <img v-if="site.logo" :src="site.logo" class="h-5" alt="" />
         <template v-else>
           <span class="grid h-5 w-7 place-items-center rounded-md bg-[#f10000] text-[#f1f1f1]"

@@ -81,6 +81,13 @@ const copy = async () => {
 document.title = 'Watch page builder'
 // /preview (iframe or another tab) re-renders from this on every change
 watch(d, v => localStorage.setItem('draft', JSON.stringify(v)), { deep: true, immediate: true })
+// field being edited (or open list item); preview outlines the matching element
+const focus = ref('')
+const hl = computed(() => {
+  const i = list.value?.indexOf(ex.value)
+  return focus.value || (i >= 0 ? `${L[tab.value].key}.${i}` : '')
+})
+watch(hl, v => localStorage.setItem('hl', v), { immediate: true })
 watch(tab, t => t === 'json' && (raw.value = JSON.stringify(d.value, null, 2)))
 
 // render the preview at desktop width, scaled down to fit the pane
@@ -175,24 +182,24 @@ const btnP = 'h-9 rounded-full bg-[#3ea6ff] px-4 text-sm font-medium text-[#0f0f
           </nav>
         </header>
 
-        <main class="px-4 py-4">
+        <main class="px-4 py-4" @focusin="focus = $event.target.closest('[data-hl]')?.dataset.hl ?? ''" @focusout="$event.currentTarget.contains($event.relatedTarget) || (focus = '')">
           <template v-if="tab === 'video'">
-            <Fields :o="d.video" :f="F.video" />
-            <label class="mt-3 flex items-center gap-2 text-sm">
+            <Fields :o="d.video" :f="F.video" p="video" />
+            <label data-hl="video.lock" class="mt-3 flex items-center gap-2 text-sm">
               <input :checked="d.video.lock !== false" type="checkbox" class="size-3.5 accent-[#3ea6ff]" @change="d.video.lock = $event.target.checked" />
               Force fullscreen on play
               <span class="text-xs text-[#aaa]">(locks the mouse, Esc exits)</span>
             </label>
             <div class="mt-5 mb-2.5 flex items-center justify-between border-t border-white/10 pt-4">
               <h2 class="text-sm font-bold">Channel</h2>
-              <label class="flex items-center gap-2 text-xs text-[#aaa]"><input v-model="d.video.author.verified" type="checkbox" class="size-3.5 accent-[#3ea6ff]" />Verified</label>
+              <label data-hl="video.author.verified" class="flex items-center gap-2 text-xs text-[#aaa]"><input v-model="d.video.author.verified" type="checkbox" class="size-3.5 accent-[#3ea6ff]" />Verified</label>
             </div>
-            <Fields :o="d.video.author" :f="F.author" />
+            <Fields :o="d.video.author" :f="F.author" p="video.author" />
           </template>
 
           <template v-else-if="tab === 'site'">
-            <Fields :o="d.site" :f="F.site" />
-            <label class="mt-2.5 block">
+            <Fields :o="d.site" :f="F.site" p="site" />
+            <label data-hl="chips" class="mt-2.5 block">
               <span class="mb-1 block text-xs text-[#aaa]">Chips</span>
               <span class="flex flex-wrap gap-1.5 rounded-md border border-[#303030] bg-[#121212] p-1 focus-within:border-[#3ea6ff]">
                 <span v-for="(c, i) in d.chips" :key="c" class="flex h-7 items-center gap-0.5 rounded bg-white/10 pr-1 pl-2.5 text-sm">
@@ -227,7 +234,7 @@ const btnP = 'h-9 rounded-full bg-[#3ea6ff] px-4 text-sm font-medium text-[#0f0f
                   <button :class="ico" class="size-8 hover:text-[#ff8a80]" title="Remove" aria-label="Remove" @click="list.splice(i, 1)"><Icon n="delete" :s="18" /></button>
                 </span>
               </div>
-              <Fields v-if="ex === o" :o="o" :f="L[tab].f" class="px-2 pt-1 pb-3" />
+              <Fields v-if="ex === o" :o="o" :f="L[tab].f" :p="`${L[tab].key}.${i}`" class="px-2 pt-1 pb-3" />
             </div>
             <button
               class="mt-2 flex h-10 w-full items-center justify-center gap-1.5 rounded-lg border border-dashed border-white/15 text-sm text-[#aaa] hover:border-white/30 hover:text-white active:scale-[0.99]"

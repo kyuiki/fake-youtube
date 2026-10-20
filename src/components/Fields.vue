@@ -9,7 +9,8 @@ import { computed, nextTick, ref } from 'vue'
 import Icon from './Icon.vue'
 
 // f: [key, label, optional, wide, type('area'|'img')]
-const { o, f } = defineProps({ o: Object, f: Array })
+// p: path prefix the preview uses to find what's being edited
+const { o, f, p } = defineProps({ o: Object, f: Array, p: String })
 const root = ref()
 
 const has = k => (o[k] ?? '') !== '' || !!open.get(o)?.has(k)
@@ -30,7 +31,7 @@ const inp = 'w-full rounded-md border border-[#303030] bg-[#121212] px-2.5 text-
 <template>
   <div ref="root" class="grid grid-cols-2 gap-x-3 gap-y-2.5">
     <template v-for="[k, l, opt, wide, t] in f" :key="k">
-      <label v-if="!opt || has(k)" :class="{ 'col-span-2': wide }">
+      <label v-if="!opt || has(k)" :class="{ 'col-span-2': wide }" :data-hl="`${p}.${k}`">
         <span class="mb-1 flex h-4 items-center justify-between text-xs text-[#aaa]">
           {{ l }}
           <button v-if="opt" type="button" class="rounded hover:text-white" :aria-label="`Remove ${l}`" @click.prevent="drop(k)"><Icon n="close" :s="14" /></button>

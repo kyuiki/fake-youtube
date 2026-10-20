@@ -13,3 +13,22 @@ body {
   color: #f1f1f1;
   font-family: var(--font-sans);
 }
+
+/* builder preview highlight; delay lets the smooth scroll land before the ripple */
+:root {
+  /* ring, then a page-sized spread that dims everything else */
+  --glow: 0 0 0 8px rgb(62 166 255 / 0.2), 0 0 0 200vmax rgb(0 0 0 / 0.6);
+}
+@keyframes hl {
+  from {
+    box-shadow: 0 0 0 0 rgb(62 166 255 / 0.7), var(--glow);
+  }
+  to {
+    box-shadow: 0 0 0 20px rgb(62 166 255 / 0), var(--glow);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-hl] {
+    animation: none !important;
+  }
+}
