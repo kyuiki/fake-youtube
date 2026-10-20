@@ -10,7 +10,7 @@
 
 <script setup>
   import Hls from "hls.js";
-  import { ref, computed, onMounted, onBeforeUnmount } from "vue";
+  import { ref, computed, watch, onMounted, onBeforeUnmount } from "vue";
   import Icon from "./Icon.vue";
   import { lock, bindLock } from "../lock";
 
@@ -86,6 +86,15 @@
     emit("ad", props.ads[i]);
   };
   const skipAt = computed(() => (ad.value?.skip === "" || ad.value?.skip == null ? 5 : +ad.value.skip));
+  // yellow bar fills until skippable; unskippable (skip past the end) spans the whole ad
+  const adPct = computed(() => Math.min(t.value / Math.min(skipAt.value, dur.value || Infinity), 1) * 100 + "%");
+  // timeupdate only fires ~4x/s, so follow playback per frame for smooth bars
+  let raf;
+  const tick = () => {
+    t.value = vid().currentTime;
+    raf = requestAnimationFrame(tick);
+  };
+  watch(playing, (p) => (cancelAnimationFrame(raf), p && tick()));
   const full = () => (document.fullscreenElement ? document.exitFullscreen() : box.value.requestFullscreen());
   const onFs = () => (fs.value = document.fullscreenElement === box.value);
   const seek = (e) => {
@@ -124,6 +133,7 @@
     hls?.destroy();
     ahls?.destroy();
     clearTimeout(idle);
+    cancelAnimationFrame(raf);
     unbind?.();
     document.removeEventListener("fullscreenchange", onFs);
   });
@@ -215,7 +225,7 @@
         @pointerup="drag = false"
       >
         <div v-if="ad" class="relative h-1 w-full bg-[#282828]/60">
-          <div class="absolute inset-y-0 left-0 bg-[#fc0]" :style="{ width: pct(t) }" />
+          <div class="absolute inset-y-0 left-0 bg-[#fc0]" :style="{ width: adPct }" />
         </div>
         <div v-else class="relative h-[3px] w-full bg-white/20 transition-[height] group-hover/bar:h-[5px]">
           <div class="absolute inset-y-0 left-0 bg-white/40" :style="{ width: pct(buf) }" />
