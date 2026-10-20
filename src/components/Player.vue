@@ -108,7 +108,9 @@
     idle = setTimeout(() => (active.value = false), 2500);
   };
   const onMeta = (e) => {
-    e.target.currentTime = parseFloat(props.start) || 0;
+    // any seek, even to 0, hides the poster
+    const s = parseFloat(props.start);
+    if (s) e.target.currentTime = s;
     if (!ad.value) t.value = e.target.currentTime;
   };
   const onBuf = () => {
