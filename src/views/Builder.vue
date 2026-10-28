@@ -5,6 +5,7 @@ import { kvGet, kvSave } from '../kv'
 import Fields from '../components/Fields.vue'
 import { host } from '../components/Player.vue'
 import Icon from '../components/Icon.vue'
+import grab from '../grab.js?raw'
 
 const clone = o => JSON.parse(JSON.stringify(o))
 // pages saved before ads existed
@@ -59,6 +60,19 @@ const dup = i => {
   list.value.splice(i + 1, 0, clone(list.value[i]))
   ex.value = list.value[i + 1]
 }
+
+const bm = `javascript:${encodeURIComponent(grab)}`
+const saved1 = ref(false)
+const saveBm = async () => {
+  await navigator.clipboard.writeText(bm)
+  saved1.value = true
+}
+const paste = () =>
+  run('Pasting…', async () => {
+    const r = JSON.parse(await navigator.clipboard.readText())
+    if (!Array.isArray(r)) throw Error('Clipboard has no grabbed videos')
+    d.value.recommendations = r
+  })
 
 const addChip = () => {
   const v = chip.value.trim()
@@ -225,6 +239,50 @@ const btnP = 'h-9 rounded-full bg-[#3ea6ff] px-4 text-sm font-medium text-[#0f0f
             </template>
 
             <div v-else class="space-y-1">
+              <details v-if="tab === 'recs'" open class="mb-3 rounded-lg border border-white/10 text-sm">
+                <summary class="flex h-10 cursor-pointer items-center gap-2 px-3 font-medium select-none">Import your YouTube feed</summary>
+                <ol class="space-y-4 px-3 pt-1 pb-3">
+                  <li class="flex gap-3">
+                    <b class="grid size-6 shrink-0 place-items-center rounded-full bg-[#3ea6ff] text-xs text-[#0f0f0f]">1</b>
+                    <div class="min-w-0 flex-1 space-y-2">
+                      <p>Drag this button onto your bookmarks bar.</p>
+                      <a :href="bm" :class="btn" class="inline-flex cursor-grab items-center ring-2 ring-[#3ea6ff]/60" @click.prevent="saveBm">Grab from YouTube</a>
+                      <p v-if="saved1" role="status" class="rounded-md bg-[#3ea6ff]/10 px-2.5 py-2 text-xs text-[#f1f1f1]">
+                        Copied! Press <kbd class="rounded bg-white/10 px-1 font-sans">Ctrl+D</kbd> to bookmark this page, then edit that bookmark: name it "Grab from YouTube" and paste the copied text as its URL.
+                      </p>
+                      <p class="text-xs text-[#aaa]">
+                        Bookmarks bar hidden? Press <kbd class="rounded bg-white/10 px-1 font-sans">Ctrl+Shift+B</kbd> (<kbd class="rounded bg-white/10 px-1 font-sans">⌘⇧B</kbd> on Mac) to show it. Can't drag? Right-click the button and choose Bookmark link (Firefox), or Copy link address and add it as a new bookmark's URL (Chrome).
+                      </p>
+                      <div class="flex h-7 items-center gap-1.5 rounded bg-white/5 px-2" aria-hidden="true">
+                        <i class="h-3 w-12 rounded-sm bg-white/15" /><i class="h-3 w-16 rounded-sm bg-white/15" /><i class="h-3 w-10 rounded-sm bg-white/15" />
+                        <span class="flex h-4 animate-pulse items-center rounded-sm border border-dashed border-[#3ea6ff] px-1.5 text-[10px] text-[#3ea6ff]">Grab from YouTube</span>
+                      </div>
+                    </div>
+                  </li>
+                  <li class="flex gap-3">
+                    <b class="grid size-6 shrink-0 place-items-center rounded-full bg-[#3ea6ff] text-xs text-[#0f0f0f]">2</b>
+                    <div class="min-w-0 flex-1 space-y-2">
+                      <p>Open youtube.com and click the bookmark. It copies the videos on screen.</p>
+                      <div class="overflow-hidden rounded border border-white/10" aria-hidden="true">
+                        <div class="flex h-6 items-center gap-1.5 bg-white/5 px-2">
+                          <span class="rounded-sm bg-[#3ea6ff]/25 px-1.5 text-[10px] text-[#3ea6ff] ring-1 ring-[#3ea6ff]">Grab from YouTube</span>
+                          <span class="ml-auto text-[10px] text-[#aaa]">Copied 24 videos</span>
+                        </div>
+                        <div class="grid grid-cols-4 gap-1.5 p-2">
+                          <i v-for="n in 8" :key="n" class="aspect-video rounded-sm bg-white/10" />
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                  <li class="flex gap-3">
+                    <b class="grid size-6 shrink-0 place-items-center rounded-full bg-[#3ea6ff] text-xs text-[#0f0f0f]">3</b>
+                    <div class="min-w-0 flex-1 space-y-2">
+                      <p>Come back here and paste. They replace the list below.</p>
+                      <button :class="btn" @click="paste">Paste grabbed</button>
+                    </div>
+                  </li>
+                </ol>
+              </details>
               <label v-if="tab === 'ads'" class="mb-2 flex items-center gap-2 text-sm">
                 <input :checked="d.hideOnBlock !== false" type="checkbox" class="size-3.5 accent-[#3ea6ff]" @change="d.hideOnBlock = $event.target.checked" />
                 Skip ads if an ad blocker is detected
