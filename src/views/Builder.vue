@@ -225,6 +225,10 @@ const btnP = 'h-9 rounded-full bg-[#3ea6ff] px-4 text-sm font-medium text-[#0f0f
             </template>
 
             <div v-else class="space-y-1">
+              <label v-if="tab === 'ads'" class="mb-2 flex items-center gap-2 text-sm">
+                <input :checked="d.hideOnBlock !== false" type="checkbox" class="size-3.5 accent-[#3ea6ff]" @change="d.hideOnBlock = $event.target.checked" />
+                Skip ads if an ad blocker is detected
+              </label>
               <p v-if="!rows.length" class="py-6 text-center text-sm text-[#aaa]">Nothing here yet.</p>
               <div v-for="([o, img, title, sub, ch], i) in rows" :key="o" class="group rounded-lg" :class="ex === o ? 'bg-white/5' : 'hover:bg-white/5'">
                 <div class="flex items-center pr-1">

@@ -51,7 +51,7 @@ onMounted(async () => {
     const [res, blocked] = await Promise.all([kvGet(props.id), adblock(), new Promise(r => setTimeout(r, 800))])
     if (!res?.video?.author) throw 0
     // a blocker user expects no ads; showing ours would give the page away
-    if (blocked) res.ads = []
+    if (blocked && res.hideOnBlock !== false) res.ads = []
     document.title = res.video.title
     d.value = res
   } catch {
