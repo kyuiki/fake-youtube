@@ -33,7 +33,18 @@
         <Icon n="mic" />
       </button>
     </div>
-    <div class="flex shrink-0 items-center gap-2">
+    <div v-if="site.signedIn" data-hl="site.signedIn site.avatar site.notifs" class="flex shrink-0 items-center gap-2">
+      <button class="flex h-10 items-center gap-1.5 rounded-full bg-white/10 pr-4 pl-3 text-sm font-medium hover:bg-white/20 max-sm:hidden"><Icon n="create" />Create</button>
+      <button :class="btn" class="relative">
+        <Icon n="bell" />
+        <span v-if="site.notifs" class="absolute top-1 left-5 grid h-[18px] min-w-[18px] place-items-center rounded-full bg-[#e1002d] px-1 text-xs text-white">{{ site.notifs }}</span>
+      </button>
+      <button class="mx-1.5 grid size-8 place-items-center overflow-hidden rounded-full bg-white/10">
+        <img v-if="site.avatar" :src="site.avatar" class="size-full object-cover" alt="" />
+        <Icon v-else n="account" :s="32" />
+      </button>
+    </div>
+    <div v-else class="flex shrink-0 items-center gap-2">
       <button :class="btn"><Icon n="vert" /></button>
       <a
         href="#"

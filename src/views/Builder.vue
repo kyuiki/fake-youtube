@@ -29,6 +29,7 @@ const F = {
   video: [['src', 'Video URL (.m3u8 / .mp4 / .webm)', 0, 1], ['title', 'Title', 0, 1], ['views', 'Views'], ['date', 'Date'], ['likes', 'Likes'], ['commentCount', 'Comment count'], ['description', 'Description', 0, 1, 'area'], ['poster', 'Poster URL', 1, 1, 'img'], ['tags', 'Tags', 1, 1]],
   author: [['name', 'Name'], ['subs', 'Subscribers'], ['avatar', 'Avatar URL', 1, 1, 'img']],
   site: [['name', 'Site name', 0, 1], ['logo', 'Logo URL', 1, 1, 'img']],
+  user: [['avatar', 'Avatar URL', 1, 1, 'img'], ['notifs', 'Notification count', 1]],
   rec: [['title', 'Title', 0, 1], ['channel', 'Channel'], ['duration', 'Duration'], ['views', 'Views'], ['ago', 'Uploaded'], ['thumbnail', 'Thumbnail URL', 0, 1, 'img'], ['id', 'Links to page id', 1, 1]],
   comment: [['user', 'Handle'], ['ago', 'Posted'], ['likes', 'Likes'], ['replies', 'Replies', 1], ['text', 'Text', 0, 1, 'area'], ['avatar', 'Avatar URL', 1, 1, 'img']],
   ad: [['title', 'Headline', 0, 1], ['url', 'Link URL'], ['cta', 'Button text'], ['avatar', 'Logo URL', 0, 1, 'img'], ['video', 'Video URL (.m3u8 / .mp4), empty = sidebar only', 0, 1], ['banner', 'Sidebar banner URL (5:1)', 1, 1, 'img'], ['skip', 'Skippable after (s)', 1], ['domain', 'Display URL', 1]],
@@ -200,6 +201,12 @@ const btnP = 'h-9 rounded-full bg-[#3ea6ff] px-4 text-sm font-medium text-[#0f0f
 
             <template v-else-if="tab === 'site'">
               <Fields :o="d.site" :f="F.site" p="site" />
+              <label data-hl="site.signedIn" class="mt-3 flex items-center gap-2 text-sm">
+                <input v-model="d.site.signedIn" type="checkbox" class="size-3.5 accent-[#3ea6ff]" />
+                Signed in
+                <span class="text-xs text-[#aaa]">(replaces the Sign in button)</span>
+              </label>
+              <Fields v-if="d.site.signedIn" :o="d.site" :f="F.user" p="site" class="mt-2.5" />
               <label data-hl="chips" class="mt-2.5 block">
                 <span class="mb-1 block text-xs text-[#aaa]">Chips</span>
                 <span class="flex flex-wrap gap-1.5 rounded-md border border-[#303030] bg-[#121212] p-1 focus-within:border-[#3ea6ff]">
