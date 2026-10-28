@@ -30,7 +30,7 @@ const F = {
   author: [['name', 'Name'], ['subs', 'Subscribers'], ['avatar', 'Avatar URL', 1, 1, 'img']],
   site: [['name', 'Site name', 0, 1], ['logo', 'Logo URL', 1, 1, 'img']],
   user: [['avatar', 'Avatar URL', 1, 1, 'img'], ['notifs', 'Notification count', 1]],
-  rec: [['title', 'Title', 0, 1], ['channel', 'Channel'], ['duration', 'Duration'], ['views', 'Views'], ['ago', 'Uploaded'], ['thumbnail', 'Thumbnail URL', 0, 1, 'img'], ['id', 'Links to page id', 1, 1]],
+  rec: [['title', 'Title', 0, 1], ['channel', 'Channel'], ['duration', 'Duration'], ['views', 'Views'], ['ago', 'Uploaded'], ['badge', 'Channel badge', 1, 0, ['verified', 'music']], ['thumbnail', 'Thumbnail URL', 0, 1, 'img'], ['id', 'Links to page id', 1, 1]],
   comment: [['user', 'Handle'], ['ago', 'Posted'], ['likes', 'Likes'], ['replies', 'Replies', 1], ['text', 'Text', 0, 1, 'area'], ['avatar', 'Avatar URL', 1, 1, 'img']],
   ad: [['title', 'Headline', 0, 1], ['url', 'Link URL'], ['cta', 'Button text'], ['avatar', 'Logo URL', 0, 1, 'img'], ['video', 'Video URL (.m3u8 / .mp4), empty = sidebar only', 0, 1], ['banner', 'Sidebar banner URL (5:1)', 1, 1, 'img'], ['skip', 'Skippable after (s)', 1], ['domain', 'Display URL', 1]],
 }

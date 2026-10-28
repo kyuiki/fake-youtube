@@ -8,7 +8,7 @@ const open = reactive(new WeakMap())
 import { computed, nextTick, ref } from 'vue'
 import Icon from './Icon.vue'
 
-// f: [key, label, optional, wide, type('area'|'img')]
+// f: [key, label, optional, wide, type('area'|'img'|[select options])]
 // p: path prefix the preview uses to find what's being edited
 const { o, f, p } = defineProps({ o: Object, f: Array, p: String })
 const root = ref()
@@ -36,7 +36,11 @@ const inp = 'w-full rounded-md border border-[#303030] bg-[#121212] px-2.5 text-
           {{ l }}
           <button v-if="opt" type="button" class="rounded hover:text-white" :aria-label="`Remove ${l}`" @click.prevent="drop(k)"><Icon n="close" :s="14" /></button>
         </span>
-        <textarea v-if="t === 'area'" v-model="o[k]" :data-k="k" rows="3" :class="inp" class="block resize-y py-1.5" />
+        <select v-if="Array.isArray(t)" v-model="o[k]" :data-k="k" :class="inp" class="h-8">
+          <option value="">None</option>
+          <option v-for="v in t" :key="v" :value="v">{{ v }}</option>
+        </select>
+        <textarea v-else-if="t === 'area'" v-model="o[k]" :data-k="k" rows="3" :class="inp" class="block resize-y py-1.5" />
         <span v-else class="relative block">
           <img v-if="t === 'img' && o[k]" :key="o[k]" :src="o[k]" alt="" class="absolute top-1 left-1 size-6 rounded bg-white/10 object-cover" @error="$event.target.style.visibility = 'hidden'" />
           <input v-model="o[k]" :data-k="k" :class="[inp, 'h-8', t === 'img' && o[k] && 'pl-9']" />

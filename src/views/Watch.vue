@@ -200,7 +200,9 @@ watch(
           </div>
           <div class="relative min-w-0 flex-1 pr-6">
             <h3 class="mb-1 line-clamp-2 text-sm font-medium leading-5">{{ r.title }}</h3>
-            <div class="text-xs leading-[18px] text-[#aaa]">{{ r.channel }}</div>
+            <div class="flex items-center gap-1 text-xs leading-[18px] text-[#aaa]">
+              {{ r.channel }}<Icon v-if="r.badge === 'music'" n="music" :s="14" /><Icon v-else-if="r.badge === 'verified'" n="check" :s="14" />
+            </div>
             <div class="text-xs leading-[18px] text-[#aaa]">{{ r.views }} • {{ r.ago }}</div>
             <Icon n="vert" :s="20" class="absolute top-0 right-0" />
           </div>
