@@ -14,6 +14,9 @@
   import Icon from "./Icon.vue";
   import { lock, bindLock } from "../lock";
 
+  const pill = "flex h-10 items-center justify-center rounded-full bg-black/30";
+  const cb = "grid h-10 w-12 place-items-center";
+
   const props = defineProps({
     src: String,
     poster: String,
@@ -179,7 +182,7 @@
     <template v-if="ad">
       <div
         class="absolute left-[22px] flex flex-col items-start gap-[7px] transition-[bottom] duration-300"
-        :class="show ? 'bottom-[71px]' : 'bottom-4'"
+        :class="show ? 'bottom-[79px]' : 'bottom-4'"
       >
         <a
           v-if="ad.title"
@@ -206,7 +209,7 @@
       <button
         v-if="t >= skipAt"
         class="absolute right-[22px] flex h-9 items-center rounded-full bg-black/60 pr-1.5 pl-4 text-sm font-medium text-white transition-[bottom] duration-300 hover:bg-[#3f3f3f]/80"
-        :class="show ? 'bottom-[70px]' : 'bottom-4'"
+        :class="show ? 'bottom-[78px]' : 'bottom-4'"
         @click="playAd(ai + 1)"
       >
         Skip<span class="grid size-9 place-items-center"><Icon n="skip" /></span>
@@ -218,7 +221,7 @@
     >
       <div
         ref="bar"
-        class="group/bar relative flex h-4 touch-none items-end pb-1"
+        class="group/bar relative flex h-4 touch-none items-end pb-px"
         :class="{ 'cursor-pointer': !ad }"
         @pointerdown="ad || down($event)"
         @pointermove="drag && seek($event)"
@@ -227,37 +230,27 @@
         <div v-if="ad" class="relative h-1 w-full bg-[#282828]/60">
           <div class="absolute inset-y-0 left-0 bg-[#fc0]" :style="{ width: adPct }" />
         </div>
-        <div v-else class="relative h-[3px] w-full bg-white/20 transition-[height] group-hover/bar:h-[5px]">
-          <div class="absolute inset-y-0 left-0 bg-white/40" :style="{ width: pct(buf) }" />
-          <div class="absolute inset-y-0 left-0 bg-[#f00]" :style="{ width: pct(t) }" />
-          <div
-            class="absolute top-1/2 size-[13px] -translate-x-1/2 -translate-y-1/2 scale-0 rounded-full bg-[#f00] transition-transform group-hover/bar:scale-100"
-            :class="{ 'scale-100': drag }"
-            :style="{ left: pct(t) }"
-          />
+        <div v-else class="relative h-1 w-full rounded-[3px] bg-[#282828]/60 transition-[height] group-hover/bar:h-1.5">
+          <div class="absolute inset-y-0 left-0 rounded-[3px] bg-white/40" :style="{ width: pct(buf) }" />
+          <div class="absolute inset-y-0 left-0 rounded-[3px] bg-linear-to-r from-[#f03] from-80% to-[#ff2791]" :style="{ width: pct(t) }" />
+          <div class="absolute top-1/2 size-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#f03]" :style="{ left: pct(t) }" />
         </div>
       </div>
-      <div class="flex h-12 items-center justify-between text-white">
-        <div class="flex items-center">
-          <button class="grid size-12 place-items-center" @click="toggle">
-            <Icon :n="playing ? 'pause' : 'play'" :s="32" />
-          </button>
-          <button v-if="!ad" class="grid size-12 place-items-center"><Icon n="next" :s="28" /></button>
-          <button class="grid size-12 place-items-center"><Icon n="volume" :s="26" /></button>
-          <span class="px-2 text-[13px] tabular-nums">{{ fmt(t) }} / {{ fmt(dur) }}</span>
+      <div class="flex h-14 items-center justify-between text-white">
+        <div class="flex items-center gap-2">
+          <button :class="pill" class="w-10" @click="toggle"><Icon :n="playing ? 'pause' : 'play'" :s="28" /></button>
+          <button :class="pill" class="ml-1 w-10"><Icon n="volume" /></button>
+          <span :class="pill" class="px-4 text-sm font-medium tabular-nums">{{ fmt(t) }}<span class="px-1 font-normal">/</span><span class="font-normal">{{ fmt(dur) }}</span></span>
         </div>
-        <div class="flex items-center">
-          <span class="mx-3 flex h-3.5 w-9 items-center rounded-full bg-white/30"
-            ><span class="grid size-5 place-items-center rounded-full bg-[#cdcdcd] text-black"
-              ><Icon n="pause" :s="12" /></span
+        <div :class="pill" class="px-1">
+          <span class="grid h-10 w-12 place-items-center"
+            ><span class="flex h-[18px] w-[30px] items-center justify-end rounded-full bg-white p-0.5"
+              ><span class="grid size-3.5 place-items-center rounded-full bg-black"><Icon :n="playing ? 'play' : 'pause'" :s="10" /></span></span
           ></span>
-          <button class="grid size-12 place-items-center"><Icon n="cc" :s="26" /></button>
-          <button class="grid size-12 place-items-center"><Icon n="settings" :s="26" /></button>
-          <button v-if="!ad" class="grid size-12 place-items-center"><Icon n="mini" :s="24" /></button>
-          <button class="grid size-12 place-items-center"><Icon n="theater" :s="28" /></button>
-          <button class="grid size-12 place-items-center" @click="full">
-            <Icon :n="fs ? 'unfull' : 'full'" :s="28" />
-          </button>
+          <button :class="cb"><Icon n="cc" /></button>
+          <button :class="cb"><Icon n="settings" /></button>
+          <button :class="cb"><Icon n="theater" /></button>
+          <button :class="cb" @click="full"><Icon :n="fs ? 'unfull' : 'full'" /></button>
         </div>
       </div>
     </div>
