@@ -20,6 +20,15 @@ body {
   --sb: clamp(max(320px, (100vw - 30px) * 0.275), 100vw - 78px - var(--mp), max(320px, (100vw - 30px) * 0.35));
 }
 
+/* newer layout (?q=v2): centered player under a side rail; opening a panel switches to the v3 sizing */
+.v2 {
+  --mp: calc((100vh - 208px) * 16 / 9);
+}
+.v2.open {
+  --mp: calc((100vh - 252px) * 16 / 9);
+  --sb: clamp(max(320px, (100vw - 94px) * 0.275), 100vw - 127px - var(--mp), 550px);
+}
+
 /* builder preview highlight; delay lets the smooth scroll land before the ripple */
 :root {
   /* ring, then a page-sized spread that dims everything else */
