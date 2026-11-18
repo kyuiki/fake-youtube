@@ -86,7 +86,10 @@ const chipKey = e => {
   } else if (e.key === 'Backspace' && !chip.value) d.value.chips.pop()
 }
 
-const link = computed(() => cur.value && `${location.origin}/watch?v=${cur.value.key}`)
+// youtube layout the page renders in; travels as ?q= on the link and the preview
+const layouts = [['', 'Classic'], ['v2', 'New'], ['v3', 'New + comments']]
+const q = computed(() => (d.value.layout ? `q=${d.value.layout}` : ''))
+const link = computed(() => cur.value && `${location.origin}/watch?v=${cur.value.key}${q.value && '&' + q.value}`)
 const copy = async () => {
   await navigator.clipboard.writeText(link.value)
   copied.value = true
@@ -173,7 +176,7 @@ const btnP = 'h-9 rounded-full bg-[#3ea6ff] px-4 text-sm font-medium text-[#0f0f
                 <option v-for="m in mine" :key="m.key" :value="m.key">{{ m.title || m.key }}</option>
               </select>
               <button :class="ico" title="New page" aria-label="New page" @click="fresh"><Icon n="add" :s="20" /></button>
-              <a :class="ico" href="/preview" target="_blank" title="Open preview" aria-label="Open preview"><Icon n="open" :s="18" /></a>
+              <a :class="ico" :href="`/preview${q && '?' + q}`" target="_blank" title="Open preview" aria-label="Open preview"><Icon n="open" :s="18" /></a>
               <button :class="btnP" @click="save">{{ cur ? 'Save' : 'Create' }}</button>
             </div>
 
@@ -214,6 +217,12 @@ const btnP = 'h-9 rounded-full bg-[#3ea6ff] px-4 text-sm font-medium text-[#0f0f
             </template>
 
             <template v-else-if="tab === 'site'">
+              <div class="mb-3">
+                <span class="mb-1 block text-xs text-[#aaa]">Layout</span>
+                <div class="flex rounded-md border border-[#303030] bg-[#121212] p-0.5 text-sm">
+                  <button v-for="[v, l] in layouts" :key="v" type="button" class="h-7 flex-1 rounded px-2" :class="(d.layout || '') === v ? 'bg-white/15 font-medium' : 'text-[#aaa] hover:text-white'" @click="d.layout = v">{{ l }}</button>
+                </div>
+              </div>
               <Fields :o="d.site" :f="F.site" p="site" />
               <label data-hl="site.zoom" class="mt-2.5 block">
                 <span class="mb-1 flex h-4 items-center justify-between text-xs text-[#aaa]">
@@ -326,7 +335,7 @@ const btnP = 'h-9 rounded-full bg-[#3ea6ff] px-4 text-sm font-medium text-[#0f0f
       </div>
 
       <div ref="pane" class="overflow-hidden border-l border-white/10 max-lg:hidden">
-        <iframe src="/preview" title="Preview" allow="fullscreen" class="origin-top-left border-0" :style="{ width: `${w / scale}px`, height: `${100 / scale}vh`, transform: `scale(${scale})` }" />
+        <iframe :src="`/preview${q && '?' + q}`" title="Preview" allow="fullscreen" class="origin-top-left border-0" :style="{ width: `${w / scale}px`, height: `${100 / scale}vh`, transform: `scale(${scale})` }" />
       </div>
     </div>
     <footer role="note" class="sticky bottom-0 flex items-center justify-center gap-2 bg-[#ffd54f] px-4 py-1.5 text-center text-xs font-medium text-black">
