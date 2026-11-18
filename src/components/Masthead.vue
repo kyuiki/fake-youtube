@@ -7,9 +7,9 @@
 
 <template>
   <header class="fixed inset-x-0 top-0 z-50 flex h-14 items-center justify-between bg-[#0f0f0f] px-4">
-    <div class="flex shrink-0 items-center">
+    <div class="flex min-w-[169px] shrink-0 items-center">
       <button :class="btn"><Icon n="menu" /></button>
-      <a href="#" data-hl="site.name site.logo" class="ml-3 flex items-center gap-1">
+      <a href="#" data-hl="site.name site.logo" class="ml-4 flex items-center gap-1">
         <img v-if="site.logo" :src="site.logo" class="h-5" alt="" />
         <template v-else>
           <span class="grid h-5 w-7 place-items-center rounded-md bg-[#f10000] text-[#f1f1f1]"
@@ -19,21 +19,21 @@
         </template>
       </a>
     </div>
-    <div class="mx-10 flex max-w-[732px] flex-1 items-center max-sm:hidden">
-      <div class="flex h-10 flex-1">
+    <div class="flex flex-[0_1_732px] items-center pl-[76px] max-sm:hidden">
+      <div class="mr-1 flex h-10 flex-1">
         <input
           placeholder="Search"
           class="min-w-0 flex-1 rounded-l-full border border-[#303030] bg-[#121212] pl-4 text-base outline-none placeholder:text-[#888] focus:border-[#1c62b9]"
         />
-        <button class="grid w-16 place-items-center rounded-r-full border border-l-0 border-[#303030] bg-[#222]">
+        <button class="grid w-16 place-items-center rounded-r-full border border-l-0 border-[#303030] bg-white/8">
           <Icon n="search" />
         </button>
       </div>
-      <button class="ml-4 grid size-10 place-items-center rounded-full bg-[#181818] hover:bg-white/10">
+      <button class="ml-3 grid size-10 shrink-0 place-items-center rounded-full bg-white/10 hover:bg-white/20">
         <Icon n="mic" />
       </button>
     </div>
-    <div v-if="site.signedIn" data-hl="site.signedIn site.avatar site.notifs" class="flex shrink-0 items-center gap-2">
+    <div v-if="site.signedIn" data-hl="site.signedIn site.avatar site.notifs" class="flex min-w-[225px] shrink-0 items-center justify-end gap-2">
       <button class="flex h-10 items-center gap-1.5 rounded-full bg-white/10 pr-4 pl-3 text-sm font-medium hover:bg-white/20 max-sm:hidden"><Icon n="create" />Create</button>
       <button :class="btn" class="relative">
         <Icon n="bell" />
@@ -44,11 +44,11 @@
         <Icon v-else n="account" :s="32" />
       </button>
     </div>
-    <div v-else class="flex shrink-0 items-center gap-2">
+    <div v-else class="flex min-w-[225px] shrink-0 items-center justify-end gap-2">
       <button :class="btn"><Icon n="vert" /></button>
       <a
         href="#"
-        class="flex h-9 items-center gap-1.5 rounded-full border border-white/20 pl-2 pr-3 text-sm font-medium text-[#3ea6ff] hover:bg-[#263850]"
+        class="flex h-10 items-center gap-1.5 rounded-full border border-white/20 px-[15px] text-sm font-medium text-[#3ea6ff] hover:bg-[#263850]"
         ><Icon n="account" />Sign in</a
       >
     </div>
