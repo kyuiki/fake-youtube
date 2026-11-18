@@ -156,7 +156,7 @@ watch(
                 <button class="ml-2 h-8 rounded-full px-3 font-medium text-[#f1f1f1] hover:bg-white/10">Reply</button>
               </div>
               <button v-if="c.replies" class="mt-3 -ml-4 flex h-10 items-center gap-1.5 rounded-full px-4 text-sm font-medium hover:bg-white/10">
-                {{ c.replies }} {{ c.replies > 1 ? 'replies' : 'reply' }}<Icon n="down" />
+                {{ c.replies }} {{ c.replies == 1 ? 'reply' : 'replies' }}<Icon n="down" />
               </button>
             </div>
             <Icon n="vert" class="shrink-0 opacity-0 group-hover:opacity-100" />

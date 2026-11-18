@@ -70,8 +70,13 @@ const saveBm = async () => {
 const paste = () =>
   run('Pasting…', async () => {
     const r = JSON.parse(await navigator.clipboard.readText())
-    if (!Array.isArray(r)) throw Error('Clipboard has no grabbed videos')
-    d.value.recommendations = r
+    // feed grab: an array of videos; watch-page grab: the video itself plus its comments and up next
+    if (Array.isArray(r)) return void (d.value.recommendations = r)
+    if (!r?.video) throw Error('Clipboard has no grabbed videos')
+    const v = d.value.video
+    Object.assign(v, r.video, { author: { ...v.author, ...r.video.author } })
+    if (r.comments?.length) d.value.comments = r.comments
+    if (r.recommendations?.length) d.value.recommendations = r.recommendations
   })
 
 const addChip = () => {
@@ -203,6 +208,10 @@ const btnP = 'h-9 rounded-full bg-[#3ea6ff] px-4 text-sm font-medium text-[#0f0f
 
           <main class="px-4 py-4" @focusin="focus = $event.target.closest('[data-hl]')?.dataset.hl ?? ''" @focusout="$event.currentTarget.contains($event.relatedTarget) || (focus = '')">
             <template v-if="tab === 'video'">
+              <div class="mb-4 flex items-center gap-3 rounded-lg border border-white/10 p-3 text-sm">
+                <p class="flex-1 text-xs text-[#aaa]">Copy a real video: open it on YouTube, click your <b class="font-medium text-[#f1f1f1]">Grab from YouTube</b> bookmark (set up in <button type="button" class="text-[#3ea6ff] hover:underline" @click="tab = 'recs'">Up next</button>), then paste. Fills the title, stats, description, channel, comments and Up next. Your video URL stays.</p>
+                <button :class="btn" class="shrink-0" @click="paste">Paste grabbed</button>
+              </div>
               <Fields :o="d.video" :f="F.video" p="video" />
               <label data-hl="video.lock" class="mt-3 flex items-center gap-2 text-sm">
                 <input :checked="d.video.lock !== false" type="checkbox" class="size-3.5 accent-[#3ea6ff]" @change="d.video.lock = $event.target.checked" />
@@ -279,7 +288,7 @@ const btnP = 'h-9 rounded-full bg-[#3ea6ff] px-4 text-sm font-medium text-[#0f0f
                   <li class="flex gap-3">
                     <b class="grid size-6 shrink-0 place-items-center rounded-full bg-[#3ea6ff] text-xs text-[#0f0f0f]">2</b>
                     <div class="min-w-0 flex-1 space-y-2">
-                      <p>Open youtube.com and click the bookmark. It copies the videos on screen.</p>
+                      <p>Open youtube.com and click the bookmark. It copies the videos on screen. On a video page it copies that video too.</p>
                       <div class="overflow-hidden rounded border border-white/10" aria-hidden="true">
                         <div class="flex h-6 items-center gap-1.5 bg-white/5 px-2">
                           <span class="rounded-sm bg-[#3ea6ff]/25 px-1.5 text-[10px] text-[#3ea6ff] ring-1 ring-[#3ea6ff]">Grab from YouTube</span>
