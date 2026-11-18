@@ -59,6 +59,9 @@ onMounted(async () => {
   }
 })
 
+// same effect as the visitor pressing ctrl +/-, but chosen by the page
+watch(() => d.value?.site?.zoom, z => (document.documentElement.style.zoom = z ? z / 100 : ''))
+
 // d too: the edited element may only exist after the draft re-renders
 watch(
   [hl, d],

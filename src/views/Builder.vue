@@ -215,6 +215,14 @@ const btnP = 'h-9 rounded-full bg-[#3ea6ff] px-4 text-sm font-medium text-[#0f0f
 
             <template v-else-if="tab === 'site'">
               <Fields :o="d.site" :f="F.site" p="site" />
+              <label data-hl="site.zoom" class="mt-2.5 block">
+                <span class="mb-1 flex h-4 items-center justify-between text-xs text-[#aaa]">
+                  Page zoom
+                  <button v-if="d.site.zoom" type="button" class="hover:text-white" @click.prevent="d.site.zoom = ''">{{ d.site.zoom }}% · Reset</button>
+                  <span v-else>100%</span>
+                </span>
+                <input :value="d.site.zoom || 100" type="range" min="50" max="200" step="5" class="w-full accent-[#3ea6ff]" @input="d.site.zoom = +$event.target.value === 100 ? '' : +$event.target.value" />
+              </label>
               <label data-hl="site.signedIn" class="mt-3 flex items-center gap-2 text-sm">
                 <input v-model="d.site.signedIn" type="checkbox" class="size-3.5 accent-[#3ea6ff]" />
                 Signed in
