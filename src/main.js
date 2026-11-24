@@ -18,11 +18,11 @@ const router = createRouter({
   history: createWebHistory(),
   routes: [
     { path: '/', component: () => import('./views/Youitu.vue') },
-    { path: '/actual', component: () => import('./views/Home.vue') },
     { path: '/builder', component: () => import('./views/Builder.vue') },
-    { path: '/watch', component: Watch, props: r => ({ id: r.query.v }) },
-    { path: '/preview', component: Watch, props: { preview: true } },
-    { path: '/:id', component: Watch, props: true },
+    { path: '/:pathMatch(.*)*', component: () => import('./views/Home.vue') },
+    // { path: '/watch', component: Watch, props: r => ({ id: r.query.v }) },
+    // { path: '/preview', component: Watch, props: { preview: true } },
+    // { path: '/:id', component: Watch, props: true },
   ],
 })
 
